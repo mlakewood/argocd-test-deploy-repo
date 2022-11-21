@@ -1,22 +1,54 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: python-demo-app
+---
+apiVersion: v1
+kind: Service
 metadata:
   name: python-demo-app-web
   namespace: python-demo-app
 spec:
-  replicas: 2
+  ports:
+  - name: http
+    port: 80
+    targetPort: gunicorn
+  selector:
+    app: python-demo-app
+    role: web
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: python-demo-app
+  namespace: python-demo-app
+spec:
+  replicas: 5
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: python-demo-app
-      role: web
+  strategy:
+    canary:
+      steps:
+      - setWeight: 20
+      - pause: {}
+      - setWeight: 40
+      - pause:
+          duration: 10
+      - setWeight: 60
+      - pause:
+          duration: 10
+      - setWeight: 80
+      - pause:
+          duration: 10
   template:
     metadata:
       labels:
         app: python-demo-app
-        role: web
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test:main-ea1f1eb
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test:foo
         name: python-demo-app
         ports:
         - containerPort: 5000
