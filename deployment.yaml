@@ -48,7 +48,7 @@ spec:
         app: python-demo-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test:$BRANCH_NAME-$GIT-SHA
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test:main--SHA
         name: python-demo-app
         ports:
         - containerPort: 5000
