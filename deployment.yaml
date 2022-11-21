@@ -23,7 +23,7 @@ metadata:
   name: python-demo-app
   namespace: python-demo-app
 spec:
-  replicas: 5
+  replicas: 4
   revisionHistoryLimit: 2
   selector:
     matchLabels:
@@ -35,20 +35,20 @@ spec:
       - pause: {}
       - setWeight: 40
       - pause:
-          duration: 10
+          duration: 1m
       - setWeight: 60
       - pause:
-          duration: 10
+          duration: 1m
       - setWeight: 80
       - pause:
-          duration: 10
+          duration: 1m
   template:
     metadata:
       labels:
         app: python-demo-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test:main-3723a4a
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test:main-32d0ac6
         name: python-demo-app
         ports:
         - containerPort: 5000
