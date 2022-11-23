@@ -18,6 +18,25 @@ spec:
     role: web
 ---
 apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: integration-tests
+  namespace: python-demo-app
+spec:
+  metrics:
+  - name: integration-tests
+    provider:
+      job:
+        spec:
+          backoffLimit: 1
+          template:
+            spec:
+              containers:
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-32d0ac6
+                name: integration-tests
+              restartPolicy: Never
+---
+apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: python-demo-app
@@ -51,7 +70,7 @@ spec:
         app: python-demo-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test:main-f2af0a3
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test:main-cabe67a
         name: python-demo-app
         ports:
         - containerPort: 5000
