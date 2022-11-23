@@ -33,6 +33,9 @@ spec:
       steps:
       - setWeight: 20
       - pause: {}
+      - analysis:
+          templates:
+          - templateName: integration-tests
       - setWeight: 40
       - pause:
           duration: 1m
@@ -48,7 +51,7 @@ spec:
         app: python-demo-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test:main-32d0ac6
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test:main-f2af0a3
         name: python-demo-app
         ports:
         - containerPort: 5000
