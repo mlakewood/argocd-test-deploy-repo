@@ -51,7 +51,8 @@ spec:
     canary:
       steps:
       - setWeight: 20
-      - pause: {}
+      - pause:
+          duration: 5m
       - analysis:
           templates:
           - templateName: integration-tests
@@ -70,7 +71,7 @@ spec:
         app: python-demo-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test:main-cabe67a
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test:main-73c88d5
         name: python-demo-app
         ports:
         - containerPort: 5000
