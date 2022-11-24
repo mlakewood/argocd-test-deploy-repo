@@ -32,7 +32,7 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-a866200
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-77ccb8d
                 name: integration-tests
               restartPolicy: Never
 ---
@@ -71,7 +71,7 @@ spec:
         app: python-demo-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test:main-a866200
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test:main-77ccb8d
         name: python-demo-app
         ports:
         - containerPort: 5000
