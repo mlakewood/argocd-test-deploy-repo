@@ -32,62 +32,6 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-32d0ac6
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-9880487
                 name: integration-tests
               restartPolicy: Never
----
-apiVersion: argoproj.io/v1alpha1
-kind: Rollout
-metadata:
-  name: python-demo-app
-  namespace: python-demo-app
-spec:
-  replicas: 4
-  revisionHistoryLimit: 2
-  selector:
-    matchLabels:
-      app: python-demo-app
-  strategy:
-    canary:
-      steps:
-      - setWeight: 20
-      - pause:
-          duration: 5m
-      - analysis:
-          templates:
-          - templateName: integration-tests
-      - setWeight: 40
-      - pause:
-          duration: 1m
-      - setWeight: 60
-      - pause:
-          duration: 1m
-      - setWeight: 80
-      - pause:
-          duration: 1m
-  template:
-    metadata:
-      labels:
-        app: python-demo-app
-    spec:
-      containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test:main-73c88d5
-        name: python-demo-app
-        ports:
-        - containerPort: 5000
-          name: webserver
-        readinessProbe:
-          httpGet:
-            path: /
-            port: webserver
-          initialDelaySeconds: 10
-        resources:
-          limits:
-            cpu: 200m
-            memory: 256Mi
-          requests:
-            cpu: 100m
-            memory: 128Mi
-      securityContext:
-        runAsGroup: 1000
-        runAsUser: 1000
