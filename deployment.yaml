@@ -13,14 +13,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: back-app-preview
+  name: back-app-canary
 spec:
   ports:
   - name: http
     port: 8081
     targetPort: 5000
   selector:
-    app: back-app-preview
+    app: back-app-canary
 ---
 apiVersion: v1
 kind: Service
@@ -37,14 +37,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: front-app-preview
+  name: front-app-canary
 spec:
   ports:
   - name: http
     port: 8080
     targetPort: 5000
   selector:
-    app: front-app-preview
+    app: front-app-canary
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
@@ -60,7 +60,7 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-61f8ab3
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-1da1780
                 name: integration-tests
               restartPolicy: Never
 ---
@@ -98,7 +98,7 @@ spec:
         app: back-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-61f8ab3
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-1da1780
         name: back-app
         ports:
         - containerPort: 5000
@@ -131,14 +131,15 @@ spec:
       app: front-app
   strategy:
     canary:
+      canaryService: front-app-canary
+      stableService: front-app
       steps:
       - setCanaryScale:
+          matchTrafficWeight: true
           replicas: 1
       - analysis:
           templates:
           - templateName: integration-tests
-      - setCanaryScale:
-          matchTrafficWeight: true
       - setWeight: 20
       - pause:
           duration: 1m
@@ -157,7 +158,7 @@ spec:
         app: front-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-61f8ab3
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-1da1780
         name: front-app
         ports:
         - containerPort: 5000
