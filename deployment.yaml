@@ -60,7 +60,7 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-1da1780
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-ee4ce91
                 name: integration-tests
               restartPolicy: Never
 ---
@@ -98,14 +98,14 @@ spec:
         app: back-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-1da1780
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-ee4ce91
         name: back-app
         ports:
         - containerPort: 5000
           name: webserver
         readinessProbe:
           httpGet:
-            path: /
+            path: /message
             port: webserver
           initialDelaySeconds: 10
         resources:
@@ -158,7 +158,7 @@ spec:
         app: front-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-1da1780
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-ee4ce91
         name: front-app
         ports:
         - containerPort: 5000
