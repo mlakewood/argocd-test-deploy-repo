@@ -67,7 +67,7 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-e2c3c94
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-12b8e9d
                 name: integration-tests
               restartPolicy: Never
 ---
@@ -117,7 +117,7 @@ spec:
         app: back-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-e2c3c94
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-12b8e9d
         name: back-app
         ports:
         - containerPort: 5000
@@ -187,7 +187,12 @@ spec:
         app: front-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-e2c3c94
+      - env:
+        - name: BACK_APP_HOST
+          value: back-app.python-demo-app.svc.cluster.local
+        - name: BACK_APP_PORT
+          value: "8081"
+        image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-12b8e9d
         name: front-app
         ports:
         - containerPort: 5000
