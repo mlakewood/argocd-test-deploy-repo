@@ -9,7 +9,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: back-app
-  release: stable
 spec:
   ports:
   - name: http
@@ -17,6 +16,7 @@ spec:
     targetPort: 5000
   selector:
     app: back-app
+    release: stable
 ---
 apiVersion: v1
 kind: Service
@@ -71,7 +71,7 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-efa0329
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-a0f178b
                 name: integration-tests
               restartPolicy: Never
 ---
@@ -109,7 +109,7 @@ spec:
         app: back-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-efa0329
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-a0f178b
         name: back-app
         ports:
         - containerPort: 5000
@@ -179,7 +179,7 @@ spec:
         app: front-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-efa0329
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-a0f178b
         name: front-app
         ports:
         - containerPort: 5000
