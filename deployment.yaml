@@ -60,7 +60,7 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-ee4ce91
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-cf66f00
                 name: integration-tests
               restartPolicy: Never
 ---
@@ -98,7 +98,7 @@ spec:
         app: back-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-ee4ce91
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-cf66f00
         name: back-app
         ports:
         - containerPort: 5000
@@ -158,7 +158,7 @@ spec:
         app: front-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-ee4ce91
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-cf66f00
         name: front-app
         ports:
         - containerPort: 5000
