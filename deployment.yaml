@@ -67,7 +67,7 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-bef9ec1
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-ab4ba5b
                 name: integration-tests
               restartPolicy: Never
 ---
@@ -105,7 +105,7 @@ spec:
         app: back-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-bef9ec1
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-ab4ba5b
         name: back-app
         ports:
         - containerPort: 5000
@@ -142,6 +142,9 @@ spec:
         labels:
           release: canary
       canaryService: front-app-canary
+      stableMetadata:
+        labels:
+          release: stable
       stableService: front-app
       steps:
       - setCanaryScale:
@@ -172,7 +175,7 @@ spec:
         app: front-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-bef9ec1
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-ab4ba5b
         name: front-app
         ports:
         - containerPort: 5000
