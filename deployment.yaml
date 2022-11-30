@@ -67,7 +67,7 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-13f2ab9
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-8458ead
                 name: integration-tests
               restartPolicy: Never
 ---
@@ -105,7 +105,7 @@ spec:
         app: back-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-13f2ab9
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-8458ead
         name: back-app
         ports:
         - containerPort: 5000
@@ -159,13 +159,17 @@ spec:
       - setWeight: 80
       - pause:
           duration: 1m
+      trafficRouting:
+        managedRoutes:
+        - name: production
+        - name: canary
   template:
     metadata:
       labels:
         app: front-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-13f2ab9
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-8458ead
         name: front-app
         ports:
         - containerPort: 5000
