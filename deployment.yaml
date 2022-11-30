@@ -67,7 +67,7 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-26c3f3c
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-8c5fae9
                 name: integration-tests
               restartPolicy: Never
 ---
@@ -117,7 +117,7 @@ spec:
         app: back-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-26c3f3c
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-8c5fae9
         name: back-app
         ports:
         - containerPort: 5000
@@ -185,6 +185,7 @@ spec:
     metadata:
       labels:
         app: front-app
+        instrumentation.opentelemetry.io/inject-python: "true"
     spec:
       containers:
       - env:
@@ -192,7 +193,7 @@ spec:
           value: back-app.python-demo-app.svc.cluster.local
         - name: APP_BACK_APP_PORT
           value: "8081"
-        image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-26c3f3c
+        image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-8c5fae9
         name: front-app
         ports:
         - containerPort: 5000
