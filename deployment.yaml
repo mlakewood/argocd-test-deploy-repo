@@ -28,7 +28,6 @@ spec:
     targetPort: 5000
   selector:
     app: back-app
-    release: canary
 ---
 apiVersion: v1
 kind: Service
@@ -53,7 +52,6 @@ spec:
     targetPort: 5000
   selector:
     app: front-app
-    release: canary
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
@@ -69,7 +67,7 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-01d922d
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-cb0deb5
                 name: integration-tests
               restartPolicy: Never
 ---
@@ -107,7 +105,7 @@ spec:
         app: back-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-01d922d
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-cb0deb5
         name: back-app
         ports:
         - containerPort: 5000
@@ -140,9 +138,6 @@ spec:
       app: front-app
   strategy:
     canary:
-      canaryMetadata:
-        labels:
-          release: canary
       canaryService: front-app-canary
       stableService: front-app
       steps:
@@ -174,7 +169,7 @@ spec:
         app: front-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-01d922d
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-cb0deb5
         name: front-app
         ports:
         - containerPort: 5000
