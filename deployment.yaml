@@ -1,27 +1,55 @@
 apiVersion: v1
-kind: Namespace
+kind: Service
 metadata:
-  name: python-demo-app
+  name: back-app
+spec:
+  ports:
+  - name: http
+    port: 8081
+    targetPort: 5000
+  selector:
+    app: back-app
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: python-demo-app-web
-  namespace: python-demo-app
+  name: back-app-preview
 spec:
   ports:
   - name: http
-    port: 80
-    targetPort: gunicorn
+    port: 8081
+    targetPort: 5000
   selector:
-    app: python-demo-app
-    role: web
+    app: back-app-preview
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: front-app
+spec:
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 5000
+  selector:
+    app: front-app
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: front-app-preview
+spec:
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 5000
+  selector:
+    app: front-app-preview
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
 metadata:
   name: integration-tests
-  namespace: python-demo-app
 spec:
   metrics:
   - name: integration-tests
@@ -32,21 +60,20 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-77ccb8d
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-be5fe33
                 name: integration-tests
               restartPolicy: Never
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: python-demo-app
-  namespace: python-demo-app
+  name: back-app
 spec:
   replicas: 4
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: python-demo-app
+      app: back-app
   strategy:
     canary:
       steps:
@@ -68,11 +95,70 @@ spec:
   template:
     metadata:
       labels:
-        app: python-demo-app
+        app: back-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test:main-77ccb8d
-        name: python-demo-app
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-be5fe33
+        name: back-app
+        ports:
+        - containerPort: 5000
+          name: webserver
+        readinessProbe:
+          httpGet:
+            path: /
+            port: webserver
+          initialDelaySeconds: 10
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+      securityContext:
+        runAsGroup: 1000
+        runAsUser: 1000
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: front-app
+spec:
+  replicas: 4
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: front-app
+  strategy:
+    canary:
+      steps:
+      - replicas: 1  // will scale up the 1 canary pod without steering any traffic
+        setCanaryScale: null
+      - analysis:
+          templates:
+          - templateName: integration-tests
+      - setCanaryScale:
+          matchTrafficWeight: true
+      - setWeight: 20
+      - pause:
+          duration: 1m
+      - setWeight: 40
+      - pause:
+          duration: 1m
+      - setWeight: 60
+      - pause:
+          duration: 1m
+      - setWeight: 80
+      - pause:
+          duration: 1m
+  template:
+    metadata:
+      labels:
+        app: front-app
+    spec:
+      containers:
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-be5fe33
+        name: front-app
         ports:
         - containerPort: 5000
           name: webserver
