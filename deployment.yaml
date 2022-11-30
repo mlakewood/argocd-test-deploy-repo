@@ -60,7 +60,7 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-8dd0f41
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-61f8ab3
                 name: integration-tests
               restartPolicy: Never
 ---
@@ -98,7 +98,7 @@ spec:
         app: back-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-8dd0f41
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-61f8ab3
         name: back-app
         ports:
         - containerPort: 5000
@@ -133,7 +133,7 @@ spec:
     canary:
       steps:
       - setCanaryScale:
-          replicas: 1  // will scale up the 1 canary pod without steering any traffic
+          replicas: 1
       - analysis:
           templates:
           - templateName: integration-tests
@@ -157,7 +157,7 @@ spec:
         app: front-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-8dd0f41
+      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-61f8ab3
         name: front-app
         ports:
         - containerPort: 5000
