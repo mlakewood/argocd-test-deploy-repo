@@ -1,14 +1,8 @@
 apiVersion: v1
-kind: Namespace
-metadata:
-  labels:
-    name: python-demo-app
-  name: python-demo-app
----
-apiVersion: v1
 kind: Service
 metadata:
   name: back-app
+  namespace: python-demo-app
 spec:
   ports:
   - name: http
@@ -16,47 +10,12 @@ spec:
     targetPort: 5000
   selector:
     app: back-app
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: back-app-canary
-spec:
-  ports:
-  - name: http
-    port: 8081
-    targetPort: 5000
-  selector:
-    app: back-app
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: front-app
-spec:
-  ports:
-  - name: http
-    port: 8080
-    targetPort: 5000
-  selector:
-    app: front-app
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: front-app-canary
-spec:
-  ports:
-  - name: http
-    port: 8080
-    targetPort: 5000
-  selector:
-    app: front-app
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
 metadata:
   name: integration-tests
+  namespace: python-demo-app
 spec:
   metrics:
   - name: integration-tests
@@ -67,16 +26,19 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-f3ee100
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-9183cc6
                 name: integration-tests
               restartPolicy: Never
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
+  labels:
+    app: web-service
   name: back-app
+  namespace: python-demo-app
 spec:
-  replicas: 4
+  replicas: 3
   revisionHistoryLimit: 2
   selector:
     matchLabels:
@@ -111,107 +73,17 @@ spec:
         managedRoutes:
         - name: production
         - name: canary
+    type: RollingUpdate
   template:
     metadata:
       labels:
         app: back-app
     spec:
       containers:
-      - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-f3ee100
-        name: back-app
-        ports:
-        - containerPort: 5000
-          name: webserver
-        readinessProbe:
-          httpGet:
-            path: /message
-            port: webserver
-          initialDelaySeconds: 10
-        resources:
-          limits:
-            cpu: 200m
-            memory: 256Mi
-          requests:
-            cpu: 100m
-            memory: 128Mi
-      securityContext:
-        runAsGroup: 1000
-        runAsUser: 1000
----
-apiVersion: argoproj.io/v1alpha1
-kind: Rollout
-metadata:
-  name: front-app
-spec:
-  replicas: 4
-  revisionHistoryLimit: 2
-  selector:
-    matchLabels:
-      app: front-app
-  strategy:
-    canary:
-      canaryMetadata:
-        labels:
-          release: canary
-      canaryService: front-app-canary
-      stableMetadata:
-        labels:
-          release: stable
-      stableService: front-app
-      steps:
-      - setCanaryScale:
-          matchTrafficWeight: true
-          replicas: 1
-      - analysis:
-          templates:
-          - templateName: integration-tests
-      - setWeight: 20
-      - pause:
-          duration: 1m
-      - setWeight: 40
-      - pause:
-          duration: 1m
-      - setWeight: 60
-      - pause:
-          duration: 1m
-      - setWeight: 80
-      - pause:
-          duration: 1m
-      trafficRouting:
-        managedRoutes:
-        - name: production
-        - name: canary
-  template:
-    metadata:
-      labels:
-        app: front-app
-        instrumentation.opentelemetry.io/inject-python: "true"
-    spec:
-      containers:
       - env:
-        - name: APP_BACK_APP_HOST
-          value: back-app.python-demo-app.svc.cluster.local
-        - name: APP_BACK_APP_PORT
-          value: "8081"
         - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
-          value: simplest-collector.opentelemetry.svc.cluster.local:4317
-        image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app
-        name: front-app
-        ports:
-        - containerPort: 5000
-          name: webserver
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: webserver
-          initialDelaySeconds: 10
-        resources:
-          limits:
-            cpu: 200m
-            memory: 256Mi
-          requests:
-            cpu: 100m
-            memory: 128Mi
+          value: grpc://simplest-collector.opentelemetry.svc.cluster.local:4317
+        name: back-app
       securityContext:
         runAsGroup: 1000
         runAsUser: 1000
