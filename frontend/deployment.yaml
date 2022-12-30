@@ -26,7 +26,7 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-9183cc6
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/dummy
                 name: integration-tests
               restartPolicy: Never
 ---
@@ -80,11 +80,27 @@ spec:
         app: front-app
     spec:
       containers:
-      - env:
+      - command:
+        - venv/bin/python
+        - -m
+        - flask
+        - --app
+        - front_app
+        - run
+        - -h
+        - 0.0.0.0
+        - -p
+        - "5000"
+        env:
         - name: APP_BACK_APP_HOST
           value: back-app.mlakewood.svc.cluster.local
         - name: APP_BACK_APP_PORT
           value: "8081"
         - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
           value: grpc://simplest-collector.opentelemetry.svc.cluster.local:4317
+        - name: ENV
+          value: prod
+        image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-599cdc9
         name: front-app
+        ports:
+        - containerPort: 5000

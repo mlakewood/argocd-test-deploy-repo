@@ -26,7 +26,7 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-9183cc6
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-599cdc9
                 name: integration-tests
               restartPolicy: Never
 ---
@@ -80,10 +80,37 @@ spec:
         app: back-app
     spec:
       containers:
-      - env:
+      - command:
+        - venv/bin/python
+        - -m
+        - flask
+        - --app
+        - back_app
+        - run
+        - -h
+        - 0.0.0.0
+        - -p
+        - "5000"
+        env:
         - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
           value: grpc://simplest-collector.opentelemetry.svc.cluster.local:4317
+        image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app
         name: back-app
+        ports:
+        - containerPort: 5000
+          name: webserver
+        readinessProbe:
+          httpGet:
+            path: /message
+            port: webserver
+          initialDelaySeconds: 10
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
       securityContext:
         runAsGroup: 1000
         runAsUser: 1000
