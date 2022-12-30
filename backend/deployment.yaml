@@ -14,11 +14,11 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
 metadata:
-  name: integration-tests-front-app
+  name: integration-tests-back-app
   namespace: python-demo-app
 spec:
   metrics:
-  - name: integration-tests-front-app
+  - name: integration-tests-back-app
     provider:
       job:
         spec:
@@ -26,7 +26,7 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-32cdad1
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-8b6e9f5
                 name: integration-tests
               restartPolicy: Never
 ---
@@ -93,7 +93,7 @@ spec:
         env:
         - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
           value: grpc://simplest-collector.opentelemetry.svc.cluster.local:4317
-        image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-32cdad1
+        image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-8b6e9f5
         name: back-app
         ports:
         - containerPort: 5000
