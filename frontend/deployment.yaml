@@ -29,7 +29,7 @@ spec:
     port: 8080
     targetPort: 5000
   selector:
-    app: front-app-canary
+    app: front-app
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
@@ -46,7 +46,7 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-ac98e45
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-158a280
                 name: integration-tests
               restartPolicy: Never
 ---
@@ -120,7 +120,7 @@ spec:
           value: grpc://simplest-collector.opentelemetry.svc.cluster.local:4317
         - name: ENV
           value: prod
-        image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-ac98e45
+        image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-158a280
         name: front-app
         ports:
         - containerPort: 5000

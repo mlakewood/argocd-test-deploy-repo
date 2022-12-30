@@ -29,7 +29,8 @@ spec:
     port: 8080
     targetPort: 5000
   selector:
-    app: back-app-canary
+    app: back-app
+    release: canary
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: AnalysisTemplate
@@ -46,7 +47,7 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-ac98e45
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-158a280
                 name: integration-tests
               restartPolicy: Never
 ---
@@ -113,7 +114,7 @@ spec:
         env:
         - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
           value: grpc://simplest-collector.opentelemetry.svc.cluster.local:4317
-        image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-ac98e45
+        image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-158a280
         name: back-app
         ports:
         - containerPort: 5000
