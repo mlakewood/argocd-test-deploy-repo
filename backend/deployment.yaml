@@ -26,7 +26,7 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-e2d8f74
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-32cdad1
                 name: integration-tests
               restartPolicy: Never
 ---
@@ -73,7 +73,6 @@ spec:
         managedRoutes:
         - name: production
         - name: canary
-    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -94,7 +93,7 @@ spec:
         env:
         - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
           value: grpc://simplest-collector.opentelemetry.svc.cluster.local:4317
-        image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-e2d8f74
+        image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-32cdad1
         name: back-app
         ports:
         - containerPort: 5000
