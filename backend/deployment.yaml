@@ -47,7 +47,7 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-158a280
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-649c77d
                 name: integration-tests
               restartPolicy: Never
 ---
@@ -114,7 +114,7 @@ spec:
         env:
         - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
           value: grpc://simplest-collector.opentelemetry.svc.cluster.local:4317
-        image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-158a280
+        image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/back-app:main-649c77d
         name: back-app
         ports:
         - containerPort: 5000
@@ -131,6 +131,8 @@ spec:
           requests:
             cpu: 100m
             memory: 128Mi
+      nodeSelector:
+        kubernetes.io/arch: arm64
       securityContext:
         runAsGroup: 1000
         runAsUser: 1000

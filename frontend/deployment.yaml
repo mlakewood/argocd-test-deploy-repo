@@ -46,7 +46,7 @@ spec:
           template:
             spec:
               containers:
-              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-158a280
+              - image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/argocd-test-integration-tests:main-649c77d
                 name: integration-tests
               restartPolicy: Never
 ---
@@ -120,7 +120,9 @@ spec:
           value: grpc://simplest-collector.opentelemetry.svc.cluster.local:4317
         - name: ENV
           value: prod
-        image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-158a280
+        image: 220445851985.dkr.ecr.ap-southeast-2.amazonaws.com/front-app:main-649c77d
         name: front-app
         ports:
         - containerPort: 5000
+      nodeSelector:
+        kubernetes.io/arch: arm64
